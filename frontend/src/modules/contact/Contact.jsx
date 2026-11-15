@@ -1,5 +1,6 @@
 import React from 'react';
-import { Mail, Github, Linkedin } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { Github, Linkedin } from '@/shared/ui/brandIcons';
 import PageShell from '@/shared/layout/PageShell';
 import PageHeader from '@/shared/layout/PageHeader';
 import CyberButton from '@/shared/ui/CyberButton';

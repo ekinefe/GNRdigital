@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, BookOpen, ExternalLink, Github } from 'lucide-react';
+import { ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
+import { Github } from '@/shared/ui/brandIcons';
 import CyberButton from '@/shared/ui/CyberButton';
 import PageShell from '@/shared/layout/PageShell';
 import NotFound from '@/shared/errors/NotFound';
