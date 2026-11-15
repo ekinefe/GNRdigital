@@ -1,7 +1,8 @@
 import React from 'react';
 import { profile } from '@/shared/config/profile';
 import { Link } from 'react-router-dom';
-import { Linkedin, Github, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { Github, Linkedin } from '@/shared/ui/brandIcons';
 import CyberButton from '@/shared/ui/CyberButton';
 import avatar from '@/assets/AboutMe/avatar.jpg';
 import PageShell from '@/shared/layout/PageShell';

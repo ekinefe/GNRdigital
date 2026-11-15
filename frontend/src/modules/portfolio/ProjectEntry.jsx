@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Github, ExternalLink, BookOpen } from 'lucide-react';
+import { ExternalLink, BookOpen } from 'lucide-react';
+import { Github } from '@/shared/ui/brandIcons';
 import CyberButton from '@/shared/ui/CyberButton';
 import { STATUS } from './projectStatus';
 
