@@ -13,6 +13,7 @@ import SkillsStrip from './SkillsStrip';
 import HomeResults from './HomeResults';
 import HomeContact from './HomeContact';
 import { useProjects } from '@/shared/content/useProjects';
+import { showPrivateRepo } from './projectStatus';
 import { useDocumentMeta } from '@/shared/hooks/useDocumentMeta';
 
 // Card icon per project kind
@@ -111,7 +112,7 @@ const Home = () => {
                             </div>
 
                             <p className="text-lg text-cyber-text/80 max-w-lg leading-relaxed font-sans">
-                                I build web apps and small tools that remove manual steps, from Laravel admin panels to a live React app on Cloudflare, plus embedded C++ on Arduino. I am looking for a team to learn from and ship with.
+                                I build web apps and small tools that remove manual steps, from features on existing Laravel projects to a live React app on Cloudflare, plus embedded C++ on Arduino. I am looking for a team to learn from and ship with.
                             </p>
 
                         </div>
@@ -220,9 +221,9 @@ const Home = () => {
                                         <a href={project.url} target="_blank" rel="noreferrer" className="text-cyber-pink text-xs font-mono hover:underline">
                                             VISIT_SITE &gt;&gt;
                                         </a>
-                                    ) : (
+                                    ) : showPrivateRepo(project) ? (
                                         <span className="text-cyber-muted text-xs font-mono">PRIVATE REPO</span>
-                                    )}
+                                    ) : null}
                                 </CyberCard>
                             ))}
                         </div>

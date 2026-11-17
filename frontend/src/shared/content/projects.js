@@ -6,7 +6,8 @@
 // exists; set `url` and `status: 'live'` when it does (workers.dev now, a subdomain of the portfolio domain later).
 // Public URLs come from shared/config/profile.js, never typed here.
 // Optional per project: url (live site), image + imageAlt (screenshot in public/projects/),
-// caseStudy (an internal route), learned (a short "what I learned" line, shown when present).
+// caseStudy (an internal route), learned (a short "what I learned" line, shown when present),
+// noRepo: true for something that is not code (no "PRIVATE REPO" label).
 import { brand } from '@/shared/config/brand';
 import { profile } from '@/shared/config/profile';
 
@@ -117,6 +118,7 @@ export const projects = [
         ],
         status: 'live',
         repo: null,
+        noRepo: true,
         url: null,
         featured: false,
         inAbout: true,

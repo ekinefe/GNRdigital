@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ExternalLink, BookOpen } from 'lucide-react';
 import { Github } from '@/shared/ui/brandIcons';
 import CyberButton from '@/shared/ui/CyberButton';
-import { STATUS } from './projectStatus';
+import { STATUS, showPrivateRepo } from './projectStatus';
 
 // One project block, shared by Projects (detailed) and About (compact). `points` limits how many bullets show.
 const ProjectEntry = ({ project, points = project.points.length, detailed = false }) => {
@@ -21,7 +21,7 @@ const ProjectEntry = ({ project, points = project.points.length, detailed = fals
                         <a href={project.repo} target="_blank" rel="noreferrer">
                             <CyberButton variant="ghost" icon={Github}>Source Code</CyberButton>
                         </a>
-                    ) : project.status === 'live' ? (
+                    ) : project.status === 'live' && showPrivateRepo(project) ? (
                         <span className="text-cyber-muted text-xs font-mono">PRIVATE REPO</span>
                     ) : null}
                     {project.url && (
