@@ -8,7 +8,7 @@ import NotFound from '@/shared/errors/NotFound';
 import LoadingLine from '@/shared/animations/LoadingLine';
 import { useProjects } from '@/shared/content/useProjects';
 import { useDocumentMeta } from '@/shared/hooks/useDocumentMeta';
-import { STATUS } from './projectStatus';
+import { STATUS, showPrivateRepo } from './projectStatus';
 
 const WHAT_IT_MEANS = {
     live: 'Works today.',
@@ -48,7 +48,7 @@ const ProjectDetail = () => {
                     {project.url && <a href={project.url} target="_blank" rel="noreferrer"><CyberButton variant="primary" icon={ExternalLink}>Live site</CyberButton></a>}
                     {project.repo ? (
                         <a href={project.repo} target="_blank" rel="noreferrer"><CyberButton variant="ghost" icon={Github}>Source code</CyberButton></a>
-                    ) : project.status === 'live' ? <span className="text-cyber-muted text-xs font-mono">PRIVATE REPO</span> : null}
+                    ) : project.status === 'live' && showPrivateRepo(project) ? <span className="text-cyber-muted text-xs font-mono">PRIVATE REPO</span> : null}
                     {project.caseStudy && <Link to={project.caseStudy}><CyberButton variant="ghost" icon={BookOpen}>Case study</CyberButton></Link>}
                 </div>
 

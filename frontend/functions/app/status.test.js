@@ -1,5 +1,8 @@
 // @vitest-environment node
 import { describe, it, expect, afterEach, vi } from 'vitest'
+import { mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { createTestD1 } from '../_test/testD1.js'
 import worker from '../worker.ts'
 
@@ -21,6 +24,18 @@ describe('GET /api/status', () => {
     const res = await get({})
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true, db: 'missing' })
+  })
+
+  it('answers 503 "unmigrated" when the database answers but has no tables (migrations never applied)', async () => {
+    const emptyDir = mkdtempSync(join(tmpdir(), 'no-migrations-'))
+    const db = createTestD1({ migrationsDir: emptyDir })
+    const res = await get({ DB: db })
+    // the same empty database is what makes the public lists fail with 500 in production
+    const projects = await worker.fetch(new Request('https://site.test/api/projects'), { ASSETS, DB: db })
+    db.close()
+    expect(res.status).toBe(503)
+    expect(await res.json()).toEqual({ ok: false, db: 'unmigrated' })
+    expect(projects.status).toBe(500)
   })
 
   it('answers 503 when the database is bound but fails, and leaks nothing about why', async () => {

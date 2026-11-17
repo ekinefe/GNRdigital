@@ -11,7 +11,8 @@ Free and built in: no Sentry or other service (it would be a new dependency).
 ## `GET /api/status`
 Public, answers `{ "ok": true, "db": "ok" }`.
 - `200`: the Worker runs and the database answers (`db: "ok"`), or no database is bound yet (`db: "missing"`, before the first deploy setup).
-- `503` with `{ "ok": false, "db": "error" }`: the database is bound but a trivial query fails.
+- `503` with `{ "ok": false, "db": "unmigrated" }`: the database answers but the tables the public pages need (`posts`, `projects`, `legal_documents`) do not exist, so `/api/projects`, `/api/posts` and the legal pages fail. Fix: `npm run db:migrate:remote` from `frontend/` (owner).
+- `503` with `{ "ok": false, "db": "error" }`: the database is bound but a query fails.
 It shows nothing else (no counts, versions or secrets).
 
 ## Alert when it fails (owner, after the first deploy)
