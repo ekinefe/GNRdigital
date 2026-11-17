@@ -26,9 +26,9 @@ export const about = {
         web: ['Laravel', 'Filament', 'Vue', 'Nuxt', 'React', 'Tailwind CSS', 'REST APIs'],
         data: ['MySQL', 'SQLite', 'Cloudflare D1', 'Excel'],
         testing: ['PHPUnit', 'Vitest', 'pytest'],
-        tools: ['Git', 'GitHub Actions', 'Bitbucket', 'Jira', 'Docker', 'Cloudflare Workers', 'Linux (Fedora, Ubuntu)', 'nginx', 'systemd', 'Tailscale'],
-        ai: ['Claude Code', 'OpenAI API', 'Gemini API', 'Ollama'],
-        hardware: ['Arduino', 'KiCad', 'soldering', 'I2C', 'UART/serial'],
+        tools: ['Git', 'GitHub Actions', 'Bitbucket', 'Jira', 'Docker', 'Cloudflare Workers', 'Linux (Fedora, Ubuntu)', 'nginx', 'systemd', 'Tailscale', 'SSH', 'Windows', 'Google Workspace admin'],
+        ai: ['Claude Code', 'OpenAI API', 'Ollama'],
+        hardware: ['Arduino', 'KiCad', 'soldering', 'I2C', 'UART/serial', 'interrupts', 'PC hardware'],
     },
     // Each group renders as a `git log`. Newest first. `current: true` gets the highlighted node.
     log: [
