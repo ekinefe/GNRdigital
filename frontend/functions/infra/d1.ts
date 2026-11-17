@@ -11,14 +11,25 @@ export type D1 = { prepare: (sql: string) => D1Statement };
 /** The binding from `env.DB`, or null while the database does not exist yet. */
 export const dbOf = (env: { DB?: unknown }): D1 | null => (env.DB ? (env.DB as D1) : null);
 
-export type DbState = 'ok' | 'missing' | 'error';
+export type DbState = 'ok' | 'missing' | 'unmigrated' | 'error';
 
-/** Whether the database answers a trivial query: 'missing' when it is not bound yet, 'error' when it is bound but fails. */
+// Tables the public pages read. If any is absent the migrations were not applied (for example a freshly created
+// database after a Worker rename) and /api/projects, /api/posts and the legal pages answer 500.
+export const REQUIRED_TABLES = ['posts', 'projects', 'legal_documents'] as const;
+
+/**
+ * Whether the database is usable: 'missing' when it is not bound yet, 'unmigrated' when it answers but the tables
+ * the public pages need do not exist (run `npm run db:migrate:remote`), 'error' when it is bound but fails.
+ */
 export async function checkDb(binding: unknown): Promise<DbState> {
   if (!binding) return 'missing';
   try {
-    await (binding as D1).prepare('SELECT 1 AS up').first();
-    return 'ok';
+    const placeholders = REQUIRED_TABLES.map(() => '?').join(', ');
+    const row = await (binding as D1)
+      .prepare(`SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name IN (${placeholders})`)
+      .bind(...REQUIRED_TABLES)
+      .first<{ n: number }>();
+    return (row?.n ?? 0) === REQUIRED_TABLES.length ? 'ok' : 'unmigrated';
   } catch {
     return 'error';
   }
