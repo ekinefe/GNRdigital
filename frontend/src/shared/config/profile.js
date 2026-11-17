@@ -4,7 +4,7 @@
 export const profile = {
     email: 'ekinefegnr@gmail.com',
     github: 'https://github.com/ekinefe',
-    linkedin: 'https://www.linkedin.com/in/ekin-efe-gungor-18336a20a/',
+    linkedin: 'https://www.linkedin.com/in/ekin-efe-gungor/',
     repos: {
         cwKeyer: 'https://github.com/ekinefe/CW_keyer-GNR',
         cwTrainer: 'https://github.com/ekinefe/CW_trainer-GNR',
@@ -12,10 +12,10 @@ export const profile = {
         platform: 'https://github.com/ekinefe/GNRHUB_', // GitHub redirects automatically if the repo is renamed
     },
     // Live sites of my own projects.
-    sites: { plannedLost: 'https://plannedlost.gnrdigital.workers.dev/' },
+    sites: { plannedLost: 'https://plannedlost.com/' },
     location: { city: 'Warsaw', country: 'PL', timeZone: 'Europe/Warsaw' },
     // Shown as the badge on Home. Set open: false to hide it.
-    availability: { open: true, text: 'Open to internships' },
+    availability: { open: true, text: 'Open to junior roles and internships' },
     license: { name: 'MIT', url: 'https://github.com/ekinefe/GNRHUB_' }, // repo root: a /blob/.../LICENSE link 404s until LICENSE reaches the default branch
     dyrk1a: 'https://dyrk1aprot.com',
 };
