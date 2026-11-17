@@ -15,7 +15,7 @@ export const profile = {
     sites: { plannedLost: 'https://plannedlost.com/' },
     location: { city: 'Warsaw', country: 'PL', timeZone: 'Europe/Warsaw' },
     // Shown as the badge on Home. Set open: false to hide it.
-    availability: { open: true, text: 'Open to junior roles and internships' },
+    availability: { open: true, text: 'Open to work' },
     license: { name: 'MIT', url: 'https://github.com/ekinefe/GNRHUB_' }, // repo root: a /blob/.../LICENSE link 404s until LICENSE reaches the default branch
     dyrk1a: 'https://dyrk1aprot.com',
 };
