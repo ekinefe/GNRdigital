@@ -24,9 +24,9 @@ export const REQUIRED_TABLES = ['posts', 'projects', 'legal_documents'] as const
 export async function checkDb(binding: unknown): Promise<DbState> {
   if (!binding) return 'missing';
   try {
-    const placeholders = REQUIRED_TABLES.map(() => '?').join(', ');
+    // one ? per entry in REQUIRED_TABLES
     const row = await (binding as D1)
-      .prepare(`SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name IN (${placeholders})`)
+      .prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name IN (?, ?, ?)")
       .bind(...REQUIRED_TABLES)
       .first<{ n: number }>();
     return (row?.n ?? 0) === REQUIRED_TABLES.length ? 'ok' : 'unmigrated';
