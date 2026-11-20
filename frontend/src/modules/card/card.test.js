@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { encodeQr, rsRemainder } from './qr.js'
 import { qrSvg } from './qrSvg.js'
-import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, colourTokens, shortUrl } from './cardPages.js'
+import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, cleanPhone, colourTokens, shortUrl } from './cardPages.js'
 import { profile } from '@/shared/config/profile.js'
 import { brand } from '@/shared/config/brand.js'
 
@@ -107,6 +107,19 @@ describe('card pages', () => {
         expect(card).toContain('N:Gungor;Ekin Efe;;;\r\n')
         expect(card).toContain(`URL:${origin}/\r\n`)
         expect(card.endsWith('END:VCARD\r\n')).toBe(true)
+    })
+
+    it('the vCard has a phone number only when one is given at build time', () => {
+        expect(vcard({ origin })).not.toContain('TEL')
+        expect(vcard({ origin, phone: '' })).not.toContain('TEL')
+        expect(vcard({ origin, phone: '+48 600 000 000' })).toContain('TEL;TYPE=CELL:+48 600 000 000\r\nEMAIL')
+    })
+
+    it('keeps only +, digits and spaces of the phone number, and drops junk', () => {
+        expect(cleanPhone(' +48  600-000-000\n')).toBe('+48 600000000')
+        expect(cleanPhone('+48 600 000 000\r\nNOTE:x')).toBe('+48 600 000 000')
+        expect(cleanPhone('123')).toBe('')
+        expect(cleanPhone(undefined)).toBe('')
     })
 
     it('the built QR points at the public site', () => {
