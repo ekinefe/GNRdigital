@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { brand } from './src/shared/config/brand.js'
 import { sitemapXml, robotsTxt } from './src/shared/config/seo.js'
 import { CARD_PATH, SHARE_PATH, VCARD_PATH, cardPageHtml, sharePageHtml, vcard, colourTokens } from './src/modules/card/cardPages.js'
+import { invalidProfileEnv } from './src/shared/config/profile.js'
 
 // Commit SHA baked in at build time: Cloudflare Pages sets CF_PAGES_COMMIT_SHA, local builds ask git.
 function commitSha() {
@@ -35,6 +36,8 @@ function cardFiles(origin, phone) {
 
 // https://vite.dev/config/
 export default defineConfig({
+  // PROFILE_* build variables override the contact links in src/shared/config/profile.js (GNR-182).
+  envPrefix: ['VITE_', 'PROFILE_'],
   define: {
     __APP_VERSION__: JSON.stringify(JSON.parse(readFileSync('./package.json', 'utf8')).version),
     __BUILD_SHA__: JSON.stringify(commitSha()),
@@ -59,8 +62,15 @@ export default defineConfig({
       let phone = ''
       return {
         name: 'card-pages',
-        // Only CARD_* variables are read, and none of them reaches the app bundle (that takes VITE_* only).
-        configResolved(config) { phone = loadEnv(config.mode, config.envDir || config.root, 'CARD_').CARD_PHONE || '' },
+        // CARD_* and PROFILE_* from frontend/.env* into process.env (a real environment variable wins), so the
+        // card pages built here see the same values as the app. CARD_* never reaches the app bundle.
+        configResolved(config) {
+          const env = loadEnv(config.mode, config.envDir || config.root, ['CARD_', 'PROFILE_'])
+          for (const [name, value] of Object.entries(env)) process.env[name] ??= value
+          phone = process.env.CARD_PHONE || ''
+          const invalid = invalidProfileEnv()
+          if (invalid.length) config.logger.warn(`Ignored (not a valid address, using profile.js): ${invalid.join(', ')}`)
+        },
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
             const path = (req.url || '').split('?')[0].replace(/(.)\/$/, '$1')
