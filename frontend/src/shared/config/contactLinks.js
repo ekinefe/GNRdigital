@@ -5,10 +5,9 @@ import { Globe, FolderCode, Mail, UserPlus } from 'lucide-react';
 import { Github, Linkedin, Instagram } from '../ui/brandIcons.js';
 import { profile } from './profile.js';
 import { about } from '../content/about.js';
+import { CARD_PATH, SHARE_PATH } from './cardPaths.js';
 
-// Static pages, not React routes: link to them with a plain <a href>, never a router <Link>.
-export const CARD_PATH = '/card';
-export const SHARE_PATH = '/card/share';
+export { CARD_PATH, SHARE_PATH };
 export const VCARD_PATH = `/card/${about.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.vcf`;
 
 // "https://example.com/card" -> "example.com/card"
