@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { encodeQr, rsRemainder } from './qr.js'
 import { qrSvg } from './qrSvg.js'
-import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, cleanPhone, colourTokens, shortUrl } from './cardPages.js'
+import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, cleanPhone, colourTokens, shortUrl, SHARE_SCRIPT } from './cardPages.js'
 import { profile } from '@/shared/config/profile.js'
 import { brand } from '@/shared/config/brand.js'
 
@@ -73,8 +73,14 @@ describe('card pages', () => {
     it('/card/share shows a QR that opens /card and writes the address under it', () => {
         const html = sharePageHtml({ origin, tokens })
         expect(html).toContain(`aria-label="QR code that opens ${origin}${CARD_PATH}"`)
-        expect(html).toContain(`>${shortUrl(origin + CARD_PATH)}</a>`)
-        expect(html).not.toMatch(/<script/i)
+        expect(html).toMatch(new RegExp(`<a class="url" href="${origin}${CARD_PATH}"[^>]*><svg[^>]*aria-hidden="true"`))
+        expect(html).toContain(`<span class="url-text" aria-live="polite">${shortUrl(origin + CARD_PATH)}</span></a>`)
+    })
+
+    it('/card/share loads only its own share script, and /card none', () => {
+        expect(sharePageHtml({ origin, tokens }).match(/<script[^>]*>/g)).toEqual([`<script src="${SHARE_SCRIPT}" defer>`])
+        expect(readFileSync(`public${SHARE_SCRIPT}`, 'utf8')).toContain("querySelector('a.url')")
+        expect(cardPageHtml({ origin, tokens })).not.toMatch(/<script/i)
     })
 
     it('/card/share is dark by default and has a no-JavaScript button for a light QR', () => {

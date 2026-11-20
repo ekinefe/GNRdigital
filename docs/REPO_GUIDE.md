@@ -38,7 +38,7 @@ npm run lint && npm run test:unit && npm run build   # same checks CI runs
 Optional: `.dev.vars` (copy `.dev.vars.example`) holds optional server secrets.
 
 ## Contact card (`/card`, `/card/share`)
-Two static pages for meeting people: `/card` (name and a button per link) and `/card/share` (a QR code that opens `/card`, with the address under it). They are plain HTML with inline CSS and no JavaScript, so they show at once; they are not React routes. Source: `frontend/src/modules/card/` (`cardPages.js` the pages, `qr.js` a small QR encoder, `qrSvg.js` the drawing). `vite.config.js` writes them into `dist/` (`card.html`, `card/share.html`, the `.vcf`) and serves them in `npm run dev`. The list of links is `shared/config/contactLinks.js` (URLs from `profile.js`; a link set to `null` has no button), shared with the Contact page, which links to both pages with a plain `<a href>` because they are not React routes. `/card/share` is white on black by default; its "Light QR for older phones" button flips it with CSS only. The built QR points at `brand.publicUrl`, so after a domain change rebuild and print a new one. The phone number in the `.vcf` is kept out of git: the build reads `CARD_PHONE` (e.g. `CARD_PHONE=+48 600 000 000`) from `frontend/.env.local` locally and from the Cloudflare build variables (Workers Builds → Settings → Build → Variables) in production; when it is not set the `.vcf` simply has no phone. It is not shown on the pages, but anyone who downloads the `.vcf` sees it. To scan it from a phone locally, run `npm run dev -- --host` and open the page by the network address it prints: the QR then points there.
+Two static pages for meeting people: `/card` (name and a button per link) and `/card/share` (a QR code that opens `/card`, with the address under it). They are plain HTML with inline CSS and no JavaScript, so they show at once; they are not React routes. Source: `frontend/src/modules/card/` (`cardPages.js` the pages, `qr.js` a small QR encoder, `qrSvg.js` the drawing). `vite.config.js` writes them into `dist/` (`card.html`, `card/share.html`, the `.vcf`) and serves them in `npm run dev`. The list of links is `shared/config/contactLinks.js` (URLs from `profile.js`; a link set to `null` has no button), shared with the Contact page, which links to both pages with a plain `<a href>` because they are not React routes. Tapping the address under the QR opens the phone's share sheet (WhatsApp, Messenger…) or, with a mouse, copies it; that is the only script on these pages (`public/card/share.js`, same origin, so the CSP allows it), and without it the link just opens `/card`. `/card/share` is white on black by default; its "Light QR for older phones" button flips it with CSS only. The built QR points at `brand.publicUrl`, so after a domain change rebuild and print a new one. The phone number in the `.vcf` is kept out of git: the build reads `CARD_PHONE` (e.g. `CARD_PHONE=+48 600 000 000`) from `frontend/.env.local` locally and from the Cloudflare build variables (Workers Builds → Settings → Build → Variables) in production; when it is not set the `.vcf` simply has no phone. It is not shown on the pages, but anyone who downloads the `.vcf` sees it. To scan it from a phone locally, run `npm run dev -- --host` and open the page by the network address it prints: the QR then points there.
 
 ## Decisions
 Architecture decisions are recorded in [adr/](adr/README.md).
@@ -49,6 +49,19 @@ Architecture decisions are recorded in [adr/](adr/README.md).
 - **Commits:** `type(scope): summary`. Never commit straight to the integration branch or `main`.
 - **Stacked PRs:** if one PR builds on another, set each PR's base to the previous branch **and retarget it to the integration branch before merging**, or it merges into its parent and never arrives.
 - **Tickets** live in your ticket tool (export: `GNR-export.json`). A ticket is Done when its PR has merged into the integration branch.
+
+## Build variables (contact details)
+Set in Cloudflare Workers Builds → Settings → **Build** → Variables and secrets (not the runtime ones), or in `frontend/.env.local` for `npm run dev`. All are optional: when one is missing or invalid, the value in `frontend/src/shared/config/profile.js` is used, so a deploy never breaks. A change takes effect on the next build (Deployments → Retry build).
+
+| Variable | What | Default |
+| --- | --- | --- |
+| `PROFILE_EMAIL` | Email on Contact, `/card`, footer, legal pages, `.vcf` | `profile.js` |
+| `PROFILE_LINKEDIN` | LinkedIn URL (`https://` only) | `profile.js` |
+| `PROFILE_GITHUB` | GitHub URL (`https://` only) | `profile.js` |
+| `PROFILE_INSTAGRAM` | Instagram URL; the button appears once set | none |
+| `CARD_PHONE` | Phone, only in the `.vcf` from Save contact; never in the app bundle | none |
+
+`PROFILE_*` values end up in the public JavaScript (they are shown on the site anyway). An invalid value is ignored with a warning in the build log.
 
 ## Deploying
 See [README.md](../README.md) (Deploy and Rollback). Hosting is a single Worker (ADR 0001).
