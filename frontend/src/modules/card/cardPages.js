@@ -10,21 +10,16 @@ import { brand } from '../../shared/config/brand.js';
 import { about } from '../../shared/content/about.js';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Globe, FolderCode, Mail, UserPlus, QrCode, Contrast } from 'lucide-react';
-import { Github, Linkedin, Instagram } from '../../shared/ui/brandIcons.js';
+import { QrCode, Contrast } from 'lucide-react';
+import { CARD_PATH, SHARE_PATH, VCARD_PATH, shortUrl, contactLinks } from '../../shared/config/contactLinks.js';
 import { qrSvg } from './qrSvg.js';
 
-export const CARD_PATH = '/card';
-export const SHARE_PATH = '/card/share';
-export const VCARD_PATH = `/card/${about.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.vcf`;
+export { CARD_PATH, SHARE_PATH, VCARD_PATH, shortUrl };
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // The site's lucide icons, rendered to plain SVG at build time (decorative: the label says what the button does).
 const icon = (Icon) => renderToStaticMarkup(createElement(Icon, { size: 18, 'aria-hidden': 'true', focusable: 'false' }));
-
-// "https://example.com/card" -> "example.com/card" (what people read under the QR)
-export const shortUrl = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
 // Only the --cyber-* colours from the first :root block in index.css, so the pages use the same tokens.
 export function colourTokens(indexCss) {
@@ -33,19 +28,8 @@ export function colourTokens(indexCss) {
     return [...root[1].matchAll(/(--cyber-[a-z]+)\s*:\s*([^;]+);/g)].map(([, k, v]) => `${k}:${v.trim()}`).join(';');
 }
 
-/** The buttons on /card, in order. Links whose value in profile.js is empty are left out. */
-export function cardLinks() {
-    const links = [
-        { label: 'Website', icon: Globe, detail: 'Home', href: '/' },
-        { label: 'Portfolio', icon: FolderCode, detail: 'Projects', href: '/projects' },
-        { label: 'LinkedIn', icon: Linkedin, detail: profile.linkedin && shortUrl(profile.linkedin).replace(/^www\.linkedin\.com\//, ''), href: profile.linkedin, external: true },
-        { label: 'Instagram', icon: Instagram, detail: profile.instagram && `@${shortUrl(profile.instagram).split('/').pop()}`, href: profile.instagram, external: true },
-        { label: 'GitHub', icon: Github, detail: profile.github && shortUrl(profile.github).replace(/^github\.com\//, ''), href: profile.github, external: true },
-        { label: 'Email', icon: Mail, detail: profile.email, href: profile.email && `mailto:${profile.email}` },
-        { label: 'Save contact', icon: UserPlus, detail: '.vcf', href: VCARD_PATH, download: true },
-    ];
-    return links.filter((l) => l.href);
-}
+/** The buttons on /card, in order (shared with the Contact page). */
+export const cardLinks = contactLinks;
 
 const fontFaces = `@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}`
     + `@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url(/fonts/jetbrains-mono-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}`;
