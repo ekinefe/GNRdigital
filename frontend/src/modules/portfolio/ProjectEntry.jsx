@@ -36,9 +36,10 @@ const ProjectEntry = ({ project, points = project.points.length, detailed = fals
                     )}
                 </div>
             </div>
-            <div className="border border-cyber-border bg-cyber-black p-5 transition-colors hover:border-cyber-pink/50">
+            {/* With a screenshot: on wide screens it sits beside the points (about 60/40) instead of spanning the whole card. */}
+            <div className={`border border-cyber-border bg-cyber-black p-5 transition-colors hover:border-cyber-pink/50 ${detailed && project.image ? 'lg:grid lg:grid-cols-[3fr_2fr] lg:gap-6 lg:items-start' : ''}`}>
                 {detailed && project.image && (
-                    <img src={project.image} alt={project.imageAlt} loading="lazy" width="1280" height="720" className="w-full h-auto border border-cyber-border mb-5" />
+                    <img src={project.image} alt={project.imageAlt} loading="lazy" width="1280" height="720" className="w-full h-auto border border-cyber-border mb-5 lg:mb-0" />
                 )}
                 <ul className="space-y-2 text-cyber-muted font-mono text-sm">
                     <li><span className="text-cyber-pink">&gt;</span> <span className="text-cyber-cyan font-bold">TECH:</span> {project.tech.join(', ')}</li>

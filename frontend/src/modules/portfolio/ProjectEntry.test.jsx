@@ -19,3 +19,18 @@ describe('ProjectEntry repo label', () => {
         expect(screen.queryByRole('link', { name: /source code/i })).toBeNull()
     })
 })
+
+describe('ProjectEntry screenshot', () => {
+    it('puts the screenshot beside the points on wide screens (Planned Lost)', () => {
+        show('planned-lost')
+        const img = screen.getByRole('img')
+        expect(img).toHaveAttribute('src', '/projects/planned-lost.webp')
+        expect(img.parentElement.className).toMatch(/lg:grid-cols-\[3fr_2fr\]/)
+    })
+
+    it('keeps the plain single-column card without a screenshot (Transcripter)', () => {
+        show('transcripter')
+        expect(screen.queryByRole('img')).toBeNull()
+        expect(document.querySelector('[class*="lg:grid-cols"]')).toBeNull()
+    })
+})
