@@ -5,6 +5,7 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { brand } from './src/shared/config/brand.js'
 import { sitemapXml, robotsTxt } from './src/shared/config/seo.js'
+import { CARD_PATH, SHARE_PATH, VCARD_PATH, cardPageHtml, sharePageHtml, vcard, colourTokens } from './src/modules/card/cardPages.js'
 
 // Commit SHA baked in at build time: Cloudflare Pages sets CF_PAGES_COMMIT_SHA, local builds ask git.
 function commitSha() {
@@ -18,6 +19,17 @@ function installedVersions(names) {
   return Object.fromEntries(names.map((name) => {
     try { return [name, JSON.parse(readFileSync(`./node_modules/${name}/package.json`, 'utf8')).version] } catch { return [name, 'unknown'] }
   }))
+}
+
+// The contact card pages (/card, /card/share and the .vcf), built from src/modules/card/cardPages.js.
+// `origin` goes into the QR code: brand.publicUrl in the build, the address you opened in dev.
+function cardFiles(origin) {
+  const tokens = colourTokens(readFileSync('./src/index.css', 'utf8'))
+  return {
+    [CARD_PATH]: { file: 'card.html', type: 'text/html; charset=utf-8', body: cardPageHtml({ origin, tokens }) },
+    [SHARE_PATH]: { file: 'card/share.html', type: 'text/html; charset=utf-8', body: sharePageHtml({ origin, tokens }) },
+    [VCARD_PATH]: { file: VCARD_PATH.slice(1), type: 'text/vcard; charset=utf-8', body: vcard({ origin }) },
+  }
 }
 
 // https://vite.dev/config/
@@ -38,6 +50,23 @@ export default defineConfig({
       generateBundle() {
         this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml() })
         this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robotsTxt() })
+      },
+    },
+    // Static HTML, so the card shows at once without loading the React app. In dev the pages are served from
+    // memory; open the dev server by its network address (`npm run dev -- --host`) and the QR points there.
+    {
+      name: 'card-pages',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const path = (req.url || '').split('?')[0].replace(/(.)\/$/, '$1')
+          if (![CARD_PATH, SHARE_PATH, VCARD_PATH].includes(path)) return next()
+          const { type, body } = cardFiles(`http://${req.headers.host}`)[path]
+          res.setHeader('Content-Type', type)
+          res.end(body)
+        })
+      },
+      generateBundle() {
+        for (const { file, body } of Object.values(cardFiles(brand.publicUrl))) this.emitFile({ type: 'asset', fileName: file, source: body })
       },
     },
   ],

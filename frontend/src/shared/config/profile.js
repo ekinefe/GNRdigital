@@ -5,6 +5,7 @@ export const profile = {
     email: 'ekinefegnr@gmail.com',
     github: 'https://github.com/ekinefe',
     linkedin: 'https://www.linkedin.com/in/ekin-efe-gungor/',
+    instagram: null, // full https://www.instagram.com/<handle>/ URL; the /card button shows once it is set
     repos: {
         cwKeyer: 'https://github.com/ekinefe/CW_keyer-GNR',
         cwTrainer: 'https://github.com/ekinefe/CW_trainer-GNR',
