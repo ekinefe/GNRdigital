@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import Contact from './Contact'
 import { profile } from '@/shared/config/profile'
+import { CARD_PATH, SHARE_PATH, VCARD_PATH } from '@/shared/config/contactLinks'
 
 describe('Contact', () => {
     it('shows the address once with a mailto link', () => {
@@ -17,6 +18,19 @@ describe('Contact', () => {
             expect(link).toHaveAttribute('href', href)
             expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
         }
+    })
+
+    it('offers the contact card, its QR code and a vCard as plain links (they are not React routes)', () => {
+        render(<Contact />)
+        expect(screen.getByRole('link', { name: /Show QR/ })).toHaveAttribute('href', SHARE_PATH)
+        expect(screen.getByRole('link', { name: /Contact card/ })).toHaveAttribute('href', CARD_PATH)
+        expect(screen.getByRole('link', { name: /Save contact/ })).toHaveAttribute('href', VCARD_PATH)
+        expect(screen.getByRole('link', { name: /Save contact/ })).toHaveAttribute('download')
+    })
+
+    it('shows Instagram only when profile.js has its URL', () => {
+        render(<Contact />)
+        expect(screen.queryByRole('link', { name: /Instagram/ }) !== null).toBe(Boolean(profile.instagram))
     })
 
     it('copies the address and confirms it', async () => {

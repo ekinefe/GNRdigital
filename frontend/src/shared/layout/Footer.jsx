@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { brand } from '@/shared/config/brand';
 import { build } from '@/shared/config/build';
 import { profile } from '@/shared/config/profile';
+import { CARD_PATH, SHARE_PATH } from '@/shared/config/cardPaths';
 import ThemeControls from '@/shared/ui/ThemeControls';
 import { setReduceEffects, useUserReducedEffects } from '@/shared/config/effects';
 
@@ -17,6 +18,9 @@ const external = [
     { href: profile.github, label: 'GitHub' },
     { href: profile.linkedin, label: 'LinkedIn' },
     { href: `mailto:${profile.email}`, label: 'Email' },
+    // Static pages outside the React app, so plain <a href> links, not router Links.
+    { href: CARD_PATH, label: 'Contact card' },
+    { href: SHARE_PATH, label: 'QR code' },
 ];
 
 const linkClass = 'text-cyber-muted hover:text-cyber-pink transition-colors';
