@@ -10,7 +10,7 @@ import { brand } from '../../shared/config/brand.js';
 import { about } from '../../shared/content/about.js';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Globe, FolderCode, Mail, UserPlus, QrCode } from 'lucide-react';
+import { Globe, FolderCode, Mail, UserPlus, QrCode, Contrast } from 'lucide-react';
 import { Github, Linkedin, Instagram } from '../../shared/ui/brandIcons.js';
 import { qrSvg } from './qrSvg.js';
 
@@ -75,13 +75,18 @@ footer{margin-top:2rem;font-size:0.75rem;color:rgb(var(--cyber-muted))}
 .mark b{font-weight:800;color:rgb(var(--cyber-text))}.mark em{font-style:normal;font-weight:300}.mark u{text-decoration:none;color:rgb(var(--cyber-pink))}
 .qr{display:block;width:100%;max-width:min(100%,64vh);margin:0 auto;border:1px solid rgb(var(--cyber-border));border-radius:var(--r);overflow:hidden}
 .qr svg{display:block;width:100%;height:auto}
-/* Light modules on dark (an inverted QR): iPhone Camera and Google Lens read it; some older scanner apps only
-   read dark on light. To go back, swap the two fills below. */
+/* Light modules on dark (an inverted QR) by default: iPhone Camera and Google Lens read it. Some older scanner
+   apps only read dark on light, so the "Light QR" button (a checkbox, so no JavaScript) flips the colours. */
 .qr-bg{fill:rgb(var(--cyber-black))}.qr-dot{fill:rgb(var(--cyber-text))}.qr-logo-edge{stroke:rgb(var(--cyber-black))}.qr-logo{stroke:rgb(var(--cyber-pink))}
+.flip{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.flip:checked ~ .center .qr-bg{fill:rgb(var(--cyber-text))}.flip:checked ~ .center .qr-dot{fill:rgb(var(--cyber-black))}
+.toggle{justify-content:center;margin-top:1.5rem;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.toggle .to-dark,.flip:checked ~ .toggle .to-light{display:none}.flip:checked ~ .toggle .to-dark{display:inline}
+.flip:focus-visible ~ .toggle{outline:2px solid rgb(var(--cyber-cyan));outline-offset:2px}
 .center,.wide footer{text-align:center}
 .center h1{font-size:1.5rem;margin-top:1.5rem}
 .url{display:inline-block;margin-top:0.5rem;font-size:0.875rem;color:rgb(var(--cyber-cyan));overflow-wrap:anywhere}
-.back{justify-content:center;margin-top:1.5rem}
+.back{justify-content:center;margin-top:0.5rem}
 @media (min-width:768px){h1{font-size:2.25rem}.center h1{font-size:1.875rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}`;
 
@@ -143,11 +148,13 @@ export function sharePageHtml({ origin, tokens }) {
         url: origin + SHARE_PATH,
         tokens,
         wide: true,
-        body: `<div class="center">
+        body: `<input type="checkbox" id="qr-light" class="flip">
+<div class="center">
 <div class="qr">${qrSvg(target, { label: `QR code that opens ${target}` })}</div>
 <h1>${esc(about.name)}</h1>
 <a class="url" href="${CARD_PATH}">${esc(shortUrl(target))}</a>
 </div>
+<label class="link toggle" for="qr-light">${icon(Contrast)}<span class="to-light">Light QR for older phones</span><span class="to-dark">Back to dark QR</span></label>
 <a class="link back" href="${CARD_PATH}"><span>All links</span></a>`,
     });
 }

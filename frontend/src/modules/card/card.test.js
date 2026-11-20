@@ -77,6 +77,14 @@ describe('card pages', () => {
         expect(html).not.toMatch(/<script/i)
     })
 
+    it('/card/share is dark by default and has a no-JavaScript button for a light QR', () => {
+        const html = sharePageHtml({ origin, tokens })
+        expect(html).toMatch(/<input type="checkbox" id="qr-light" class="flip">/)
+        expect(html).not.toMatch(/id="qr-light"[^>]*checked/)
+        expect(html).toContain('<label class="link toggle" for="qr-light">')
+        expect(html).toContain('.flip:checked ~ .center .qr-bg{fill:rgb(var(--cyber-text))}')
+    })
+
     it('the vCard has my name split into family and given names, with CRLF lines', () => {
         const card = vcard({ origin })
         expect(card.startsWith('BEGIN:VCARD\r\nVERSION:3.0\r\n')).toBe(true)
