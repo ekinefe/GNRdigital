@@ -28,6 +28,25 @@ export function colourTokens(indexCss) {
     return [...root[1].matchAll(/(--cyber-[a-z]+)\s*:\s*([^;]+);/g)].map(([, k, v]) => `${k}:${v.trim()}`).join(';');
 }
 
+// Surname in capitals ("Ekin Efe GUNGOR") so people meeting me can tell given names from family name.
+// The vCard keeps normal case: it stores the parts separately anyway.
+export const displayName = (name = about.name) => {
+    const parts = name.trim().split(/\s+/);
+    const family = parts.pop();
+    return [...parts, family.toUpperCase()].join(' ');
+};
+
+// The name typed in once with a blinking "_" cursor, like PageHeader on the other pages (same 100ms delay and
+// 75ms per letter), but in CSS because these pages have no JavaScript. The font is monospace, so each letter is
+// 1ch minus the heading's letter-spacing. Screen readers get the plain name; reduced motion shows it at once.
+function typedName() {
+    const name = displayName();
+    const n = [...name].length;
+    return `<span class="sr-only">${esc(name)}</span><span class="type" aria-hidden="true">`
+        + `<span class="typed" style="width:calc(${n} * (1ch - 0.02em));animation-duration:${n * 75}ms;animation-timing-function:steps(${n},end)">${esc(name)}</span>`
+        + '<span class="cur">_</span></span>';
+}
+
 /** The buttons on /card, in order (shared with the Contact page). */
 export const cardLinks = contactLinks;
 
@@ -45,6 +64,11 @@ a:focus-visible{outline:2px solid rgb(var(--cyber-cyan));outline-offset:2px}
 .prompt{font-size:0.75rem;color:rgb(var(--cyber-muted))}
 .prompt b{color:rgb(var(--cyber-pink));font-weight:400}
 h1{margin-top:0.75rem;font-size:1.875rem;line-height:1.15;font-weight:800;letter-spacing:-0.02em;overflow-wrap:anywhere}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.type{display:inline-flex;white-space:nowrap}
+.typed{display:inline-block;overflow:hidden;animation-name:type;animation-delay:100ms;animation-fill-mode:both}
+.cur{margin-left:0.1em;font-weight:400;color:rgb(var(--cyber-pink));animation:blink 1s step-end infinite}
+@keyframes type{from{width:0}}@keyframes blink{50%{opacity:0}}
 .role{margin-top:0.5rem;font-size:0.875rem;color:rgb(var(--cyber-muted))}
 .links{list-style:none;padding:0;margin-top:2rem;display:grid;gap:0.5rem}
 .link{display:flex;align-items:center;gap:0.75rem;min-height:3rem;padding:0.75rem 1rem;border:1px solid rgb(var(--cyber-border));border-radius:var(--r);transition:border-color 150ms,color 150ms}
@@ -72,7 +96,7 @@ footer{margin-top:2rem;font-size:0.75rem;color:rgb(var(--cyber-muted))}
 .url{display:inline-block;margin-top:0.5rem;font-size:0.875rem;color:rgb(var(--cyber-cyan));overflow-wrap:anywhere}
 .back{justify-content:center;margin-top:0.5rem}
 @media (min-width:768px){h1{font-size:2.25rem}.center h1{font-size:1.875rem}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}`;
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.typed,.cur{animation:none!important}}`;
 
 function page({ title, description, url, body, tokens, wide = false }) {
     return `<!doctype html>
@@ -109,12 +133,12 @@ export function cardPageHtml({ origin, tokens }) {
         return `<li><a class="link" href="${esc(l.href)}"${attrs}>${icon(l.icon)}<span>${esc(l.label)}</span><small>${esc(l.detail)}</small><i aria-hidden="true">${l.external ? '↗' : '→'}</i></a></li>`;
     }).join('\n');
     return page({
-        title: `${about.name} · ${brand.name}`,
-        description: `${about.name}: ${about.role}. ${profile.location.city}, ${profile.location.country}.`,
+        title: `${displayName()} · ${brand.name}`,
+        description: `${displayName()}: ${about.role}. ${profile.location.city}, ${profile.location.country}.`,
         url: origin + CARD_PATH,
         tokens,
         body: `<p class="prompt" aria-hidden="true">${esc(brand.prompt)}<b>$</b> whoami</p>
-<h1>${esc(about.name)}</h1>
+<h1>${typedName()}</h1>
 <p class="role">${esc(about.role)}<br>${esc(profile.location.city)}, ${esc(profile.location.country)}</p>
 <ul class="links">
 ${items}
@@ -127,15 +151,15 @@ ${items}
 export function sharePageHtml({ origin, tokens }) {
     const target = origin + CARD_PATH;
     return page({
-        title: `${about.name} · QR`,
-        description: `Scan to open ${about.name}'s links.`,
+        title: `${displayName()} · QR`,
+        description: `Scan to open ${displayName()}'s links.`,
         url: origin + SHARE_PATH,
         tokens,
         wide: true,
         body: `<input type="checkbox" id="qr-light" class="flip">
 <div class="center">
 <div class="qr">${qrSvg(target, { label: `QR code that opens ${target}` })}</div>
-<h1>${esc(about.name)}</h1>
+<h1>${typedName()}</h1>
 <a class="url" href="${CARD_PATH}">${esc(shortUrl(target))}</a>
 </div>
 <label class="link toggle" for="qr-light">${icon(Contrast)}<span class="to-light">Light QR for older phones</span><span class="to-dark">Back to dark QR</span></label>

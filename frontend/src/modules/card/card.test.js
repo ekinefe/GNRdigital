@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { encodeQr, rsRemainder } from './qr.js'
 import { qrSvg } from './qrSvg.js'
-import { CARD_PATH, SHARE_PATH, VCARD_PATH, cardLinks, cardPageHtml, sharePageHtml, vcard, colourTokens, shortUrl } from './cardPages.js'
+import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, colourTokens, shortUrl } from './cardPages.js'
 import { profile } from '@/shared/config/profile.js'
 import { brand } from '@/shared/config/brand.js'
 
@@ -83,6 +83,22 @@ describe('card pages', () => {
         expect(html).not.toMatch(/id="qr-light"[^>]*checked/)
         expect(html).toContain('<label class="link toggle" for="qr-light">')
         expect(html).toContain('.flip:checked ~ .center .qr-bg{fill:rgb(var(--cyber-text))}')
+    })
+
+    it('writes the surname in capitals on both pages', () => {
+        expect(displayName('Ekin Efe Gungor')).toBe('Ekin Efe GUNGOR')
+        for (const html of [cardPageHtml({ origin, tokens }), sharePageHtml({ origin, tokens })]) {
+            expect(html).toContain(`<span class="sr-only">${displayName()}</span>`)
+        }
+    })
+
+    it('types the name in with CSS only, and not at all with reduced motion', () => {
+        const html = cardPageHtml({ origin, tokens })
+        const n = displayName().length
+        expect(html).toContain(`animation-duration:${n * 75}ms;animation-timing-function:steps(${n},end)`)
+        expect(html).toMatch(/<span class="type" aria-hidden="true">/)
+        expect(html).toContain('@media (prefers-reduced-motion:reduce){*{transition:none!important}.typed,.cur{animation:none!important}}')
+        expect(html).not.toMatch(/<script/i)
     })
 
     it('the vCard has my name split into family and given names, with CRLF lines', () => {
