@@ -169,8 +169,17 @@ export function sharePageHtml({ origin, tokens }) {
 
 const vEsc = (s) => String(s).replace(/[\\,;]/g, (c) => `\\${c}`);
 
-/** A vCard 3.0 so people can save my name spelled right with one tap. */
-export function vcard({ origin }) {
+// A phone number as it may go into the vCard: "+", digits and spaces only, or '' when it does not look like one.
+export const cleanPhone = (raw) => {
+    const phone = String(raw ?? '').replace(/[^+\d ]/g, '').replace(/\s+/g, ' ').trim();
+    return phone.replace(/\D/g, '').length >= 6 ? phone : '';
+};
+
+/**
+ * A vCard 3.0 so people can save my name spelled right with one tap.
+ * `phone` is not in the repo: vite.config.js passes CARD_PHONE from the build environment (see REPO_GUIDE).
+ */
+export function vcard({ origin, phone }) {
     const parts = about.name.split(' ');
     const family = parts.pop();
     const lines = [
@@ -179,6 +188,7 @@ export function vcard({ origin }) {
         `N:${vEsc(family)};${vEsc(parts.join(' '))};;;`,
         `FN:${vEsc(about.name)}`,
         `TITLE:${vEsc(about.role)}`,
+        cleanPhone(phone) && `TEL;TYPE=CELL:${cleanPhone(phone)}`,
         profile.email && `EMAIL;TYPE=INTERNET:${profile.email}`,
         `URL:${origin}/`,
         profile.linkedin && `URL:${profile.linkedin}`,
