@@ -50,6 +50,19 @@ Architecture decisions are recorded in [adr/](adr/README.md).
 - **Stacked PRs:** if one PR builds on another, set each PR's base to the previous branch **and retarget it to the integration branch before merging**, or it merges into its parent and never arrives.
 - **Tickets** live in your ticket tool (export: `GNR-export.json`). A ticket is Done when its PR has merged into the integration branch.
 
+## Build variables (contact details)
+Set in Cloudflare Workers Builds → Settings → **Build** → Variables and secrets (not the runtime ones), or in `frontend/.env.local` for `npm run dev`. All are optional: when one is missing or invalid, the value in `frontend/src/shared/config/profile.js` is used, so a deploy never breaks. A change takes effect on the next build (Deployments → Retry build).
+
+| Variable | What | Default |
+| --- | --- | --- |
+| `PROFILE_EMAIL` | Email on Contact, `/card`, footer, legal pages, `.vcf` | `profile.js` |
+| `PROFILE_LINKEDIN` | LinkedIn URL (`https://` only) | `profile.js` |
+| `PROFILE_GITHUB` | GitHub URL (`https://` only) | `profile.js` |
+| `PROFILE_INSTAGRAM` | Instagram URL; the button appears once set | none |
+| `CARD_PHONE` | Phone, only in the `.vcf` from Save contact; never in the app bundle | none |
+
+`PROFILE_*` values end up in the public JavaScript (they are shown on the site anyway). An invalid value is ignored with a warning in the build log.
+
 ## Deploying
 See [README.md](../README.md) (Deploy and Rollback). Hosting is a single Worker (ADR 0001).
 
