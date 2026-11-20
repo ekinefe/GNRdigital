@@ -2,7 +2,8 @@ import React, { useEffect, useId, useState } from 'react';
 import Wordmark from '@/shared/ui/Wordmark';
 import ScrollProgress from './ScrollProgress';
 import { Link, useLocation } from 'react-router-dom';
-import { House, NotebookPen, Menu, X, PersonStanding, Mail, Code } from 'lucide-react';
+import { House, NotebookPen, Menu, X, PersonStanding, Mail, Code, QrCode } from 'lucide-react';
+import { SHARE_PATH } from '@/shared/config/cardPaths';
 
 const Header = () => {
     const location = useLocation();
@@ -50,14 +51,14 @@ const Header = () => {
                     </div>
                 </Link>
 
-                {/* === MIDDLE: NAVIGATION (Desktop) === */}
-                <nav aria-label="Main" className="hidden md:flex items-center gap-2">
+                {/* === RIGHT: NAVIGATION (Desktop), next to Share === */}
+                <nav aria-label="Main" className="hidden md:flex items-center gap-2 ml-auto">
                     {navItems.map((item) => (
                         <Link
                             key={item.path}
                             to={item.path}
                             className={`
-                                relative group flex items-center gap-2 px-4 py-2 font-mono text-sm uppercase tracking-wider transition-all duration-300
+                                relative group flex items-center gap-2 px-2 lg:px-4 py-2 font-mono text-sm uppercase tracking-wider transition-all duration-300
                                 ${isActive(item.path) ? 'text-cyber-pink' : 'text-cyber-muted hover:text-white'}
                             `}
                         >
@@ -67,14 +68,31 @@ const Header = () => {
                             {/* Active Indicator (The "LED" Line) */}
                             <span className={`
                                 absolute bottom-0 left-0 h-[2px] bg-cyber-pink transition-all duration-300
-                                ${isActive(item.path) ? 'w-full shadow-neon-pink' : 'w-0 group-hover:w-full group-hover:bg-cyber-border'}
+                                ${isActive(item.path) ? 'w-full' : 'w-0 group-hover:w-full group-hover:bg-cyber-border'}
                             `} />
                         </Link>
                     ))}
                 </nav>
 
-                {/* === RIGHT: MOBILE MENU TOGGLE === */}
-                <div className="md:hidden flex items-center z-header">
+                {/* === RIGHT (Desktop): SHARE === plain <a>: /card/share is a static page outside the React app */}
+                <a
+                    href={SHARE_PATH}
+                    aria-label="Share"
+                    className="hidden md:inline-flex items-center gap-2 ml-2 px-3 lg:px-4 py-2 border border-cyber-border font-mono text-sm uppercase tracking-wider text-cyber-text hover:border-cyber-pink hover:text-cyber-pink transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan"
+                >
+                    <QrCode aria-hidden="true" className="w-4 h-4" />
+                    <span className="hidden lg:inline">Share</span>{/* icon only on narrow tablets so the row fits */}
+                </a>
+
+                {/* === RIGHT (Mobile): SHARE + MENU TOGGLE === */}
+                <div className="md:hidden flex items-center gap-1 z-header">
+                    <a
+                        href={SHARE_PATH}
+                        aria-label="Share (QR code)"
+                        className="text-cyber-text hover:text-cyber-pink transition-colors p-2 border border-transparent hover:border-cyber-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan"
+                    >
+                        <QrCode aria-hidden="true" className="w-6 h-6" />
+                    </a>
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -91,25 +109,34 @@ const Header = () => {
             <ScrollProgress />
 
             {/* === MOBILE MENU OVERLAY === */}
+            {/* Terminal list: no boxes, thin rules between rows; the current page is pink with a "> ... _" prompt. */}
             {isMobileMenuOpen && (
                 <div id={menuId} className="md:hidden absolute top-full left-0 w-full bg-cyber-black border-b border-cyber-border shadow-2xl">
-                    <nav aria-label="Mobile" className="flex flex-col px-4 py-6 space-y-4">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                onClick={() => setIsMobileMenuOpen(false)} // Close menu on click
-                                className={`
-                                    flex items-center gap-3 p-3 border transition-colors font-mono uppercase tracking-wider text-sm
-                                    ${isActive(item.path)
-                                        ? 'border-cyber-pink text-cyber-pink bg-cyber-pink/5'
-                                        : 'border-cyber-border text-cyber-muted hover:border-cyber-text hover:text-white bg-cyber-panel'}
-                                `}
-                            >
-                                {item.icon && <item.icon className="w-5 h-5" />}
-                                {item.label}
-                            </Link>
-                        ))}
+                    <nav aria-label="Mobile" className="flex flex-col px-4 py-4 font-mono">
+                        {navItems.map((item) => {
+                            const active = isActive(item.path);
+                            return (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    aria-current={active ? 'page' : undefined}
+                                    className={`flex items-center gap-2 py-4 border-b border-cyber-border/60 text-base uppercase tracking-wider transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan ${active ? 'text-cyber-pink' : 'text-cyber-text hover:text-cyber-pink'}`}
+                                >
+                                    <span aria-hidden="true" className={active ? '' : 'invisible'}>&gt;</span>
+                                    <span>{item.label}</span>
+                                    {active && <span aria-hidden="true">_</span>}
+                                </Link>
+                            );
+                        })}
+                        <a
+                            href={SHARE_PATH}
+                            className="flex items-center gap-2 py-4 text-base uppercase tracking-wider text-cyber-muted hover:text-cyber-pink transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan"
+                        >
+                            <span aria-hidden="true" className="invisible">&gt;</span>
+                            <span>Share</span>
+                            <QrCode aria-hidden="true" className="w-4 h-4" />
+                        </a>
                     </nav>
                 </div>
             )}
