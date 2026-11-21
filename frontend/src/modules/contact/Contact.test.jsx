@@ -26,6 +26,8 @@ describe('Contact', () => {
         expect(screen.getByRole('link', { name: /Contact card/ })).toHaveAttribute('href', CARD_PATH)
         expect(screen.getByRole('link', { name: /Save contact/ })).toHaveAttribute('href', VCARD_PATH)
         expect(screen.getByRole('link', { name: /CV/ })).toHaveAttribute('href', profile.cv)
+        expect(screen.getByRole('link', { name: /CV/ })).toHaveAttribute('target', '_blank')
+        expect(screen.getByRole('link', { name: /CV/ })).toHaveAttribute('rel', 'noopener noreferrer')
         expect(screen.getByRole('link', { name: /Save contact/ })).toHaveAttribute('download')
     })
 

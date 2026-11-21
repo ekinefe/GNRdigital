@@ -1,7 +1,7 @@
 import React from 'react';
 import { profile } from '@/shared/config/profile';
 import { Link } from 'react-router-dom';
-import { Mail } from 'lucide-react';
+import { Mail, FileText } from 'lucide-react';
 import { Github, Linkedin } from '@/shared/ui/brandIcons';
 import CyberButton from '@/shared/ui/CyberButton';
 import avatar from '@/assets/AboutMe/avatar.jpg';
@@ -85,6 +85,9 @@ const AboutMe = () => {
                                 </a>
                                 <a href={profile.github} target="_blank" rel="noreferrer">
                                     <CyberButton variant="ghost" icon={Github}>GitHub</CyberButton>
+                                </a>
+                                <a href={profile.cv} target="_blank" rel="noreferrer">
+                                    <CyberButton variant="ghost" icon={FileText}>CV</CyberButton>
                                 </a>
                             </div>
                         </div>
