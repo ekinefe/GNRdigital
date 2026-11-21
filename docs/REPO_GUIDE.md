@@ -9,7 +9,7 @@ A personal portfolio site (`frontend/`) that is only the portfolio. Brandbook Ma
 | Path | What it is |
 |---|---|
 | `frontend/src/app/` | `App.jsx`: the route table. Every page except Home loads on demand. |
-| `frontend/src/modules/<feature>/` | One folder per feature: `portfolio` (Home, About, Portfolio, /design), `blog`, `admin` (sign-in and the owner's screens), `legal`, `contact`, `colophon`. |
+| `frontend/src/modules/<feature>/` | One folder per feature: `portfolio` (Home, About, Portfolio, /design), `blog` (hidden while `blog: false` in `shared/config/features.js`: no nav, footer, command or sitemap entry, `/blog` shows the 404; posts can still be written in admin), `admin` (sign-in and the owner's screens), `legal`, `contact`, `colophon`. |
 | `frontend/src/shared/` | Things any module may use: `ui` (buttons, inputs, modal...), `layout` (header, footer, page shell), `errors`, `animations`, `catalog` (searchable list page), `hooks`, `config` (brand, tokens, profile, effects, features). |
 | `frontend/functions/` | The Worker: `worker.ts` (routing table, request id and log line, errors, security headers), `domain/` (projects, posts, messages, admin: rules and SQL), `app/` (public and admin HTTP handlers) and `infra/` (D1 type, HTTP helpers). See [architecture.md](architecture.md). |
 | `frontend/db/migrations/` | Plain SQL migrations for the D1 database, numbered in order (`docs/database.md`). |

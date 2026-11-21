@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import App from './App'
+import { features } from '@/shared/config/features'
 
 // The heavy canvas animation is replaced; this test is about routing and layout, not that.
 vi.mock('@/shared/animations/FuzzyText', () => ({
@@ -32,6 +33,19 @@ describe('App Routing System', () => {
         render(<App />)
         expect(await screen.findByText(/404/)).toBeInTheDocument()
         window.history.pushState({}, '', '/')
+    })
+
+    it.each(['/blog', '/blog/some-post'])('%s shows the 404 while features.blog is off', async (path) => {
+        const was = features.blog
+        features.blog = false
+        try {
+            window.history.pushState({}, '', path)
+            render(<App />)
+            expect(await screen.findByText(/404/)).toBeInTheDocument()
+        } finally {
+            features.blog = was
+            window.history.pushState({}, '', '/')
+        }
     })
 
     it('loads a lazy route on demand', async () => {

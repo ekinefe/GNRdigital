@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 import { sitemapPaths, sitemapXml, robotsTxt } from './seo'
+import { features } from './features'
 
 const routes = [...readFileSync('src/app/App.jsx', 'utf8').matchAll(/path="([^"]+)"/g)].map((m) => m[1])
 
@@ -11,6 +12,9 @@ describe('sitemap and robots', () => {
             expect(routes).toContain(p)
             expect(gated).not.toContain(p)
         }
+    })
+    it('lists /blog only while features.blog is on', () => {
+        expect(sitemapPaths.includes('/blog')).toBe(features.blog)
     })
     it('builds absolute URLs from the base', () => {
         const xml = sitemapXml('https://example.test', ['/', '/about'])

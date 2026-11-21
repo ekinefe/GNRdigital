@@ -3,6 +3,7 @@
 import { sitemapPosts } from '../../domain/posts/actions.ts';
 import { dbOf } from '../../infra/d1.ts';
 import { sitemapPaths } from '../../../src/shared/config/seo.js';
+import { features } from '../../../src/shared/config/features.js';
 
 type Context = { request: Request; env: { DB?: unknown } };
 
@@ -13,7 +14,7 @@ async function sitemap({ request, env }: Context): Promise<Response> {
   const urls: Array<{ path: string; lastmod?: string }> = sitemapPaths.map((path: string) => ({ path }));
   try {
     const db = dbOf(env);
-    if (db) {
+    if (db && features.blog) {
       for (const p of await sitemapPosts(db)) urls.push({ path: `/blog/${p.slug}`, lastmod: new Date(p.updatedAt * 1000).toISOString().slice(0, 10) });
     }
   } catch (error) {

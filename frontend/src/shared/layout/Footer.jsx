@@ -4,12 +4,13 @@ import { brand } from '@/shared/config/brand';
 import { build } from '@/shared/config/build';
 import { profile } from '@/shared/config/profile';
 import { CARD_PATH, SHARE_PATH } from '@/shared/config/cardPaths';
+import { features } from '@/shared/config/features';
 import ThemeControls from '@/shared/ui/ThemeControls';
 import { setReduceEffects, useUserReducedEffects } from '@/shared/config/effects';
 
 const nav = [
     { to: '/projects', label: 'Projects' },
-    { to: '/blog', label: 'Blog' },
+    features.blog && { to: '/blog', label: 'Blog' },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
 ].filter(Boolean);

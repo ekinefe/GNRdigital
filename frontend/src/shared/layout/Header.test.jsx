@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect } from 'vitest'
 import Header from './Header'
 import { SHARE_PATH } from '@/shared/config/cardPaths'
+import { features } from '@/shared/config/features'
 
 describe('Header mobile menu', () => {
     it('opens and closes without crashing (the X icon must be imported)', () => {
@@ -34,11 +35,25 @@ describe('Header navigation', () => {
         expect(screen.getByRole('navigation', { name: 'Main' }).querySelector('a[href="/about"]').className).not.toMatch(/text-cyber-pink/)
     })
 
-    it('lists Home, Portfolio, Blog, About and Contact in that order', () => {
-        render(<MemoryRouter><Header /></MemoryRouter>)
-        const hrefs = [...screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')].map((a) => a.getAttribute('href'))
-        expect(hrefs).toEqual(['/', '/projects', '/blog', '/about', '/contact'])
-        expect(screen.getByRole('link', { name: 'Portfolio' })).toHaveAttribute('href', '/projects')
+    const navHrefs = () => [...screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')].map((a) => a.getAttribute('href'))
+
+    it('lists Home, Portfolio, About and Contact in that order, without Blog while features.blog is off', () => {
+        const was = features.blog
+        features.blog = false
+        try {
+            render(<MemoryRouter><Header /></MemoryRouter>)
+            expect(navHrefs()).toEqual(['/', '/projects', '/about', '/contact'])
+            expect(screen.getByRole('link', { name: 'Portfolio' })).toHaveAttribute('href', '/projects')
+        } finally { features.blog = was }
+    })
+
+    it('puts Blog back after Portfolio when features.blog is on', () => {
+        const was = features.blog
+        features.blog = true
+        try {
+            render(<MemoryRouter><Header /></MemoryRouter>)
+            expect(navHrefs()).toEqual(['/', '/projects', '/blog', '/about', '/contact'])
+        } finally { features.blog = was }
     })
 })
 

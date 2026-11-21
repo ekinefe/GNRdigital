@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createTestD1 } from '../_test/testD1.js'
 import worker from '../worker.ts'
 import { adminEnv, makePost } from '../_test/factories.js'
+import { features } from '../../src/shared/config/features.js'
 
 const ORIGIN = 'https://site.test'
 let db, env
@@ -149,21 +150,36 @@ describe('admin posts', () => {
 })
 
 describe('sitemap.xml', () => {
-  it('lists the fixed pages and public posts only, as XML', async () => {
-    const cookie = await signIn()
-    await create(cookie, { title: 'Public one', status: 'public' })
-    await create(cookie, { title: 'Draft one', status: 'draft' })
-    await create(cookie, { title: 'Private one', status: 'private' })
-    const res = await call('/sitemap.xml', { origin: null })
-    expect(res.status).toBe(200)
-    expect(res.headers.get('Content-Type')).toContain('application/xml')
-    const xml = await res.text()
-    expect(xml).toContain('<loc>https://site.test/</loc>')
-    expect(xml).toContain('<loc>https://site.test/blog</loc>')
-    expect(xml).toContain('<loc>https://site.test/blog/public-one</loc>')
-    expect(xml).not.toContain('draft-one')
-    expect(xml).not.toContain('private-one')
-    expect(xml).not.toContain('/admin')
+  it('lists the fixed pages and, with the blog on, public posts only, as XML', async () => {
+    const was = features.blog
+    features.blog = true
+    try {
+      const cookie = await signIn()
+      await create(cookie, { title: 'Public one', status: 'public' })
+      await create(cookie, { title: 'Draft one', status: 'draft' })
+      await create(cookie, { title: 'Private one', status: 'private' })
+      const res = await call('/sitemap.xml', { origin: null })
+      expect(res.status).toBe(200)
+      expect(res.headers.get('Content-Type')).toContain('application/xml')
+      const xml = await res.text()
+      expect(xml).toContain('<loc>https://site.test/</loc>')
+      expect(xml).toContain('<loc>https://site.test/blog/public-one</loc>')
+      expect(xml).not.toContain('draft-one')
+      expect(xml).not.toContain('private-one')
+      expect(xml).not.toContain('/admin')
+    } finally { features.blog = was }
+  })
+
+  it('lists no posts while the blog is off (features.blog), even public ones', async () => {
+    const was = features.blog
+    features.blog = false
+    try {
+      const cookie = await signIn()
+      await create(cookie, { title: 'Public one', status: 'public' })
+      const xml = await (await call('/sitemap.xml', { origin: null })).text()
+      expect(xml).toContain('<loc>https://site.test/about</loc>')
+      expect(xml).not.toContain('/blog')
+    } finally { features.blog = was }
   })
 
   it('still serves the fixed pages when there is no database', async () => {
