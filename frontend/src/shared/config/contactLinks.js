@@ -20,7 +20,8 @@ export function contactLinks() {
     const links = [
         { key: 'website', label: 'Website', icon: Globe, detail: 'Home', href: '/' },
         { key: 'portfolio', label: 'Portfolio', icon: FolderCode, detail: 'Projects', href: '/projects' },
-        { key: 'cv', label: 'CV', icon: FileText, detail: 'PDF', href: profile.cv },
+        // A new tab, so /card or Contact stays open behind the PDF.
+        { key: 'cv', label: 'CV', icon: FileText, detail: 'PDF', href: profile.cv, external: true },
         { key: 'linkedin', label: 'LinkedIn', icon: Linkedin, detail: profile.linkedin && shortUrl(profile.linkedin).replace(/^www\.linkedin\.com\//, ''), href: profile.linkedin, external: true },
         { key: 'instagram', label: 'Instagram', icon: Instagram, detail: profile.instagram && `@${shortUrl(profile.instagram).split('/').pop()}`, href: profile.instagram, external: true },
         { key: 'github', label: 'GitHub', icon: Github, detail: profile.github && shortUrl(profile.github).replace(/^github\.com\//, ''), href: profile.github, external: true },

@@ -11,6 +11,12 @@ vi.mock('@/shared/animations/TextType', () => ({ default: ({ text }) => <span>{t
 const wrap = () => render(<MemoryRouter><AboutMe /></MemoryRouter>)
 
 describe('About page', () => {
+    it('opens the CV (public/cv.pdf) in a new tab next to LinkedIn and GitHub', () => {
+        wrap()
+        const cv = screen.getByRole('link', { name: 'CV' })
+        expect(cv).toHaveAttribute('href', profile.cv)
+        expect(cv).toHaveAttribute('target', '_blank')
+    })
     it('shows the skills as plain labelled lines built from the data file', () => {
         wrap()
         const list = screen.getByLabelText('Skills')

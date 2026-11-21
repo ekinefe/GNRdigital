@@ -55,8 +55,9 @@ describe('card pages', () => {
         expect(links.every((l) => l.href && l.detail)).toBe(true)
     })
 
-    it('the CV button opens a PDF that is in public/ (and not dropped by the *.pdf rule in .gitignore)', () => {
+    it('the CV button opens, in a new tab, a PDF that is in public/ (and not dropped by the *.pdf rule in .gitignore)', () => {
         expect(readFileSync(`public${profile.cv}`).subarray(0, 5).toString()).toBe('%PDF-')
+        expect(cardPageHtml({ origin, tokens })).toContain(`<a class="link" href="${profile.cv}" target="_blank" rel="noopener noreferrer">`)
     })
 
     it('every button starts with a decorative icon', () => {

@@ -2,8 +2,9 @@
 // from this list and brand.publicUrl. When the Worker arrives (GNR-16) it can generate them from D1 instead.
 // Only routes that are live at launch belong here: areas that are not part of this site (tools, blogs, accounts) are left out.
 import { brand } from './brand.js';
+import { features } from './features.js';
 
-export const sitemapPaths = ['/', '/about', '/projects', '/blog', '/contact', '/colophon', '/privacy', '/terms'];
+export const sitemapPaths = ['/', '/about', '/projects', features.blog && '/blog', '/contact', '/colophon', '/privacy', '/terms'].filter(Boolean);
 
 export function sitemapXml(base = brand.publicUrl, paths = sitemapPaths) {
     const urls = paths.map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`).join('\n');
