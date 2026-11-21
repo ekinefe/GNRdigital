@@ -13,7 +13,7 @@ A personal portfolio site (`frontend/`) that is only the portfolio. Brandbook Ma
 | `frontend/src/shared/` | Things any module may use: `ui` (buttons, inputs, modal...), `layout` (header, footer, page shell), `errors`, `animations`, `catalog` (searchable list page), `hooks`, `config` (brand, tokens, profile, effects, features). |
 | `frontend/functions/` | The Worker: `worker.ts` (routing table, request id and log line, errors, security headers), `domain/` (projects, posts, messages, admin: rules and SQL), `app/` (public and admin HTTP handlers) and `infra/` (D1 type, HTTP helpers). See [architecture.md](architecture.md). |
 | `frontend/db/migrations/` | Plain SQL migrations for the D1 database, numbered in order (`docs/database.md`). |
-| `frontend/public/` | Favicon, web manifest, fonts and project screenshots (`projects/`). |
+| `frontend/public/` | Favicon, web manifest, fonts, project screenshots (`projects/`) and my CV (`cv.pdf`: the CV button on `/card` and Contact; replace the file to update it. It is the only PDF `.gitignore` lets through, and it is public, phone number included). |
 | `docs/` | This guide, architecture, copy rules, workflow guide, [easter eggs](easter-eggs.md), [observability](observability.md), [ascii](ascii.md), [architecture plan](architecture-plan.md). |
 | `.github/workflows/` | CI (`gatekeeper.yml`: unit tests on PRs). |
 | `graphify-out/` | A graph of the code for AI tools (ignored by git; refresh with `graphify update .`). |
