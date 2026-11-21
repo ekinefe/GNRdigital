@@ -36,6 +36,7 @@ export const profile = {
     get github() { return fromEnv('github', 'https://github.com/ekinefe'); },
     get linkedin() { return fromEnv('linkedin', 'https://www.linkedin.com/in/ekin-efe-gungor/'); },
     get instagram() { return fromEnv('instagram', null); }, // the /card and Contact buttons show once it is set
+    cv: '/cv.pdf', // public/cv.pdf: replace that file to update the CV (it is the one PDF .gitignore lets through)
     repos: {
         cwKeyer: 'https://github.com/ekinefe/CW_keyer-GNR',
         cwTrainer: 'https://github.com/ekinefe/CW_trainer-GNR',

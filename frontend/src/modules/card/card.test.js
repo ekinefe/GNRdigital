@@ -50,9 +50,13 @@ describe('card pages', () => {
 
     it('lists a button for every link set in profile.js and hides the empty ones', () => {
         const links = cardLinks()
-        expect(links.map((l) => l.href)).toEqual(expect.arrayContaining(['/', '/projects', profile.linkedin, profile.github, `mailto:${profile.email}`, VCARD_PATH]))
+        expect(links.map((l) => l.href)).toEqual(expect.arrayContaining(['/', '/projects', profile.cv, profile.linkedin, profile.github, `mailto:${profile.email}`, VCARD_PATH]))
         expect(links.some((l) => l.label === 'Instagram')).toBe(Boolean(profile.instagram))
         expect(links.every((l) => l.href && l.detail)).toBe(true)
+    })
+
+    it('the CV button opens a PDF that is in public/ (and not dropped by the *.pdf rule in .gitignore)', () => {
+        expect(readFileSync(`public${profile.cv}`).subarray(0, 5).toString()).toBe('%PDF-')
     })
 
     it('every button starts with a decorative icon', () => {

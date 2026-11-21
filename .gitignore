@@ -28,6 +28,7 @@ microservices/cv-generator/dist/
 *.aux
 *.log
 *.pdf
+!frontend/public/cv.pdf
 *.gz
 *.fdb_latexmk
 *.fls
