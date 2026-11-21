@@ -8,6 +8,7 @@ import PageViews from '@/shared/layout/PageViews';
 import CommandPalette from '@/shared/layout/CommandPalette';
 import ErrorBoundary from '@/shared/errors/ErrorBoundary';
 import RouteLoading from '@/shared/animations/RouteLoading';
+import { features } from '@/shared/config/features';
 
 // Pages
 import Home from '@/modules/portfolio/Home';
@@ -53,8 +54,8 @@ function App() {
           <Route path="/about" element={<AboutMe />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
-          <Route path="/blog" element={<BlogList />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+          {features.blog && <Route path="/blog" element={<BlogList />} />}
+          {features.blog && <Route path="/blog/:slug" element={<BlogPost />} />}
           <Route path="/contact" element={<Contact />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/colophon" element={<Colophon />} />

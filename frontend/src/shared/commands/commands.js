@@ -1,6 +1,7 @@
 import { profile } from '@/shared/config/profile';
 import { ACCENTS, setAccent, getScanlines, setScanlines } from '@/shared/config/theme';
 import { setReduceEffects, userReducedEffects } from '@/shared/config/effects';
+import { features } from '@/shared/config/features';
 
 // Command palette entries (GNR-49). `run` either navigates/acts (returns nothing, the palette closes)
 // or returns text lines to show inside the palette. Hidden commands only appear when typed exactly.
@@ -10,7 +11,7 @@ export function buildCommands({ navigate }) {
     const pages = [
         { title: 'Go to Home', to: '/' },
         { title: 'Go to Projects', to: '/projects' },
-        { title: 'Go to Blog', to: '/blog' },
+        features.blog && { title: 'Go to Blog', to: '/blog' },
         { title: 'Go to About', to: '/about' },
         { title: 'Go to Contact', to: '/contact' },
         { title: 'Go to Colophon', to: '/colophon' },

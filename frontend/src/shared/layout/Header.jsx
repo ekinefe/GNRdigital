@@ -4,6 +4,7 @@ import ScrollProgress from './ScrollProgress';
 import { Link, useLocation } from 'react-router-dom';
 import { House, NotebookPen, Menu, X, PersonStanding, Mail, Code, QrCode } from 'lucide-react';
 import { SHARE_PATH } from '@/shared/config/cardPaths';
+import { features } from '@/shared/config/features';
 
 const Header = () => {
     const location = useLocation();
@@ -35,7 +36,7 @@ const Header = () => {
     const navItems = [
         { path: "/", icon: House, label: "Home" },
         { path: "/projects", icon: Code, label: "Portfolio" },
-        { path: "/blog", icon: NotebookPen, label: "Blog" },
+        features.blog && { path: "/blog", icon: NotebookPen, label: "Blog" },
         { path: "/about", icon: PersonStanding, label: "About" },
         { path: "/contact", icon: Mail, label: "Contact" }
     ].filter(Boolean);
