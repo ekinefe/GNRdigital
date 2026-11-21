@@ -11,7 +11,7 @@ import ContactForm from './ContactForm';
 
 // The same links as the contact card (/card), minus the ones this site already is (Website, Portfolio) and
 // Email (the main column has it).
-const ELSEWHERE = ['linkedin', 'instagram', 'github', 'vcard'];
+const ELSEWHERE = ['cv', 'linkedin', 'instagram', 'github', 'vcard'];
 
 // A mailto link with a copy button, and a form whose messages are read in the admin panel (ADR 0009).
 // The side column lists my other links and opens the contact card and its QR code for meeting in person.
