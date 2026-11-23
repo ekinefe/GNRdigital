@@ -40,6 +40,13 @@ describe('QR picture', () => {
         expect(svg).toContain('aria-label="QR code that opens it"')
         expect(svg).not.toMatch(/fill="#|stroke="#/)
     })
+
+    it('puts a single-colour GNR in a thin frame in the middle, coloured like the modules', () => {
+        const svg = qrSvg('https://example.dev/card')
+        expect(svg).toMatch(/<text class="qr-dot"[^>]*>GNR<\/text>/)
+        expect(svg).toMatch(/<rect class="qr-frame"[^>]*fill="none"/)
+        expect(svg).not.toContain('qr-logo')
+    })
 })
 
 describe('card pages', () => {
