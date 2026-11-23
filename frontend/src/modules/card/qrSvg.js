@@ -1,6 +1,6 @@
-// Draws a QR matrix as a classic square-module SVG with the GNRdigital G mark in the middle.
-// Colours come from CSS classes (qr-bg, qr-dot, qr-logo-*) that the page defines, so the page decides
-// whether the code is dark on light or light on dark.
+// Draws a QR matrix as a classic square-module SVG with "GNR" (the bold part of the wordmark) in the middle.
+// Colours come from CSS classes (qr-bg, qr-dot) that the page defines, so the page decides whether the code is
+// dark on light or light on dark; the GNR uses qr-dot, so it is always the same single colour as the modules.
 import { encodeQr } from './qr.js';
 
 const QUIET = 4; // empty border around the code, in modules (the standard asks for 4)
@@ -33,14 +33,14 @@ export function qrSvg(text, { label = 'QR code' } = {}) {
     }
 
     const total = size + QUIET * 2;
-    // The favicon's G (viewBox 64), scaled into the hole with a little margin.
-    const scale = Number(((hole - 1) / 64).toFixed(4));
-    const lx = QUIET + h0 + 0.5;
-    const g = 'M52 15H15v34h37V35H35';
+    // "GNR" centred in the hole, a little margin each side. textLength pins its width, so a fallback font
+    // can never spill over the modules; the font-size is what JetBrains Mono needs for that width (0.6em a letter).
+    const mid = total / 2;
+    const width = hole - 1.2;
+    const fontSize = Number((width / 1.8).toFixed(3));
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" role="img" aria-label="${label}">`
         + `<rect class="qr-bg" width="${total}" height="${total}"/>`
         + `<path class="qr-dot" shape-rendering="crispEdges" d="${parts.join('')}"/>`
-        + `<g transform="translate(${lx} ${lx}) scale(${scale})" fill="none" stroke-linejoin="miter">`
-        + `<path class="qr-logo-edge" d="${g}" stroke-width="12"/><path class="qr-logo" d="${g}" stroke-width="6"/></g>`
+        + `<text class="qr-dot" x="${mid}" y="${mid}" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="800" font-size="${fontSize}" textLength="${Number(width.toFixed(3))}" lengthAdjust="spacingAndGlyphs" aria-hidden="true">GNR</text>`
         + '</svg>';
 }
