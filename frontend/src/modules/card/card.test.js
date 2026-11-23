@@ -4,6 +4,7 @@ import { encodeQr, rsRemainder } from './qr.js'
 import { qrSvg } from './qrSvg.js'
 import { CARD_PATH, SHARE_PATH, VCARD_PATH, displayName, cardLinks, cardPageHtml, sharePageHtml, vcard, cleanPhone, colourTokens, shortUrl, SHARE_SCRIPT } from './cardPages.js'
 import { profile } from '@/shared/config/profile.js'
+import { MARK_LETTERS } from '@/shared/ui/gnrMark.js'
 import { brand } from '@/shared/config/brand.js'
 
 const tokens = colourTokens(readFileSync('src/index.css', 'utf8'))
@@ -41,11 +42,17 @@ describe('QR picture', () => {
         expect(svg).not.toMatch(/fill="#|stroke="#/)
     })
 
-    it('puts a single-colour GNR in a thin frame in the middle, coloured like the modules', () => {
+    it('puts the GNR mark (the favicon) in the middle, on its own black square', () => {
         const svg = qrSvg('https://example.dev/card')
-        expect(svg).toMatch(/<text class="qr-dot"[^>]*>GNR<\/text>/)
-        expect(svg).toMatch(/<rect class="qr-frame"[^>]*fill="none"/)
-        expect(svg).not.toContain('qr-logo')
+        expect(svg).toContain(`d="${MARK_LETTERS}"`)
+        expect(svg).toMatch(/<rect class="qr-mark-bg"/)
+        expect(svg).not.toMatch(/qr-logo|qr-frame|<text/)
+    })
+
+    it('keeps the mark light on black when "Light QR" flips the code', () => {
+        const html = sharePageHtml({ origin, tokens })
+        expect(html).toContain('.qr-mark-bg{fill:rgb(0 0 0)}')
+        expect(html).not.toMatch(/\.flip:checked[^{]*\.qr-mark/)
     })
 })
 
