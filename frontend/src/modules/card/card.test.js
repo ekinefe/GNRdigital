@@ -51,7 +51,7 @@ describe('QR picture', () => {
 
     it('keeps the mark light on black when "Light QR" flips the code', () => {
         const html = sharePageHtml({ origin, tokens })
-        expect(html).toContain('.qr-mark-bg{fill:rgb(0 0 0)}')
+        expect(html).toContain('.qr-mark-bg{fill:rgb(var(--cyber-black))}')
         expect(html).not.toMatch(/\.flip:checked[^{]*\.qr-mark/)
     })
 })
