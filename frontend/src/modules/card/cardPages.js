@@ -85,7 +85,7 @@ footer{margin-top:2rem;font-size:0.75rem;color:rgb(var(--cyber-muted))}
 .qr svg{display:block;width:100%;height:auto}
 /* Light modules on dark (an inverted QR) by default: iPhone Camera and Google Lens read it. Some older scanner
    apps only read dark on light, so the "Light QR" button (a checkbox, so no JavaScript) flips the colours. */
-.qr-bg{fill:rgb(var(--cyber-black))}.qr-dot{fill:rgb(var(--cyber-text))}.qr-mark-bg{fill:rgb(var(--cyber-black))}.qr-mark{stroke:rgb(var(--cyber-text))}
+.qr-bg{fill:rgb(var(--cyber-black))}.qr-dot{fill:rgb(var(--cyber-text))}.qr-mark-bg{fill:rgb(var(--cyber-black))}.qr-mark{stroke:rgb(var(--cyber-text))}.qr-mark-text{fill:rgb(var(--cyber-text))}
 .flip{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .flip:checked ~ .center .qr-bg{fill:rgb(var(--cyber-text))}.flip:checked ~ .center .qr-dot{fill:rgb(var(--cyber-black))}
 .toggle{justify-content:center;margin-top:1.5rem;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
