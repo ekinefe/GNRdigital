@@ -11,6 +11,8 @@ First public launch: static portfolio on one Cloudflare Worker.
 - Single Worker with a routing table, central error handling, security headers and CSP, D1 rate limiting and Turnstile gate (off until configured), a cron dispatcher.
 - D1 schema as code (Drizzle) with local and preview databases.
 - CI: audit, lint, tests, build, bundle budget, security sweep.
+- CV at `/cv.pdf`, linked from `/card`, Contact and About; it opens in a new tab.
+- `shared/config/features.js`: `blog: false` hides the blog (nav, footer, command palette, sitemap, `/blog` routes) until the first public post.
 
 ### Changed
 - Hosting moves from Pages to a Worker; Supabase removed.
