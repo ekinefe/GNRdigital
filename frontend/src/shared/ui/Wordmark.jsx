@@ -2,7 +2,7 @@ import React from 'react';
 import { brand } from '@/shared/config/brand';
 
 // The lockup: bold GNR, lighter "digital", a pink cursor, and the small pink version tag.
-// Same shape as public/og.png and the favicon mark; see docs/brand.md.
+// Same shape as public/og.png; the favicon and the QR use the GNR mark (gnrMark.js). See docs/brand.md.
 const Wordmark = ({ tag = true }) => (
     <span className="font-mono whitespace-nowrap">
         <span className="font-extrabold">GNR</span>

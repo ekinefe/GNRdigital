@@ -1,7 +1,8 @@
-// Draws a QR matrix as a classic square-module SVG with "GNR" in a thin frame in the middle.
-// Colours come from CSS classes (qr-bg, qr-dot) that the page defines, so the page decides whether the code is
-// dark on light or light on dark; GNR (qr-dot) and its frame (qr-frame) are always the modules' single colour.
+// Draws a QR matrix as a classic square-module SVG with the GNR mark (shared/ui/gnrMark.js) in the middle.
+// Colours come from CSS classes the page defines: qr-bg and qr-dot decide whether the code is dark on light or
+// light on dark; the mark (qr-mark-bg, qr-mark) is always light on solid black, so it looks the same either way.
 import { encodeQr } from './qr.js';
+import { MARK_SIZE, MARK_FRAME, MARK_LETTER_STROKE, MARK_LETTERS } from '../../shared/ui/gnrMark.js';
 
 const QUIET = 4; // empty border around the code, in modules (the standard asks for 4)
 
@@ -33,17 +34,16 @@ export function qrSvg(text, { label = 'QR code' } = {}) {
     }
 
     const total = size + QUIET * 2;
-    // A thin square frame just inside the hole, and "GNR" centred in it. textLength pins the text's width, so a
-    // fallback font can never touch the frame; the font-size is what JetBrains Mono needs for that width (0.6em a letter).
-    const mid = total / 2;
-    const frame = hole - 1; // half a module of margin each side
-    const fx = QUIET + h0 + 0.5;
-    const width = hole - 2.6;
-    const fontSize = Number((width / 1.8).toFixed(3));
+    // The mark fills the hole exactly: its black square covers the hole, so the modules around it stay untouched.
+    const at = QUIET + h0;
+    const scale = Number((hole / MARK_SIZE).toFixed(5));
+    const { inset, stroke } = MARK_FRAME;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" role="img" aria-label="${label}">`
         + `<rect class="qr-bg" width="${total}" height="${total}"/>`
         + `<path class="qr-dot" shape-rendering="crispEdges" d="${parts.join('')}"/>`
-        + `<rect class="qr-frame" x="${fx}" y="${fx}" width="${frame}" height="${frame}" fill="none" stroke-width="0.3"/>`
-        + `<text class="qr-dot" x="${mid}" y="${mid}" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="500" font-size="${fontSize}" textLength="${Number(width.toFixed(3))}" lengthAdjust="spacingAndGlyphs" aria-hidden="true">GNR</text>`
+        + `<g transform="translate(${at} ${at}) scale(${scale})" aria-hidden="true">`
+        + `<rect class="qr-mark-bg" width="${MARK_SIZE}" height="${MARK_SIZE}"/>`
+        + `<rect class="qr-mark" x="${inset}" y="${inset}" width="${MARK_SIZE - inset * 2}" height="${MARK_SIZE - inset * 2}" fill="none" stroke-width="${stroke}"/>`
+        + `<path class="qr-mark" d="${MARK_LETTERS}" fill="none" stroke-width="${MARK_LETTER_STROKE}" stroke-linejoin="miter" stroke-linecap="butt"/></g>`
         + '</svg>';
 }
