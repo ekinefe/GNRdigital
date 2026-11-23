@@ -1,6 +1,6 @@
-// Draws a QR matrix as a classic square-module SVG with "GNR" (the bold part of the wordmark) in the middle.
+// Draws a QR matrix as a classic square-module SVG with "GNR" in a thin frame in the middle.
 // Colours come from CSS classes (qr-bg, qr-dot) that the page defines, so the page decides whether the code is
-// dark on light or light on dark; the GNR uses qr-dot, so it is always the same single colour as the modules.
+// dark on light or light on dark; GNR (qr-dot) and its frame (qr-frame) are always the modules' single colour.
 import { encodeQr } from './qr.js';
 
 const QUIET = 4; // empty border around the code, in modules (the standard asks for 4)
@@ -33,14 +33,17 @@ export function qrSvg(text, { label = 'QR code' } = {}) {
     }
 
     const total = size + QUIET * 2;
-    // "GNR" centred in the hole, a little margin each side. textLength pins its width, so a fallback font
-    // can never spill over the modules; the font-size is what JetBrains Mono needs for that width (0.6em a letter).
+    // A thin square frame just inside the hole, and "GNR" centred in it. textLength pins the text's width, so a
+    // fallback font can never touch the frame; the font-size is what JetBrains Mono needs for that width (0.6em a letter).
     const mid = total / 2;
-    const width = hole - 1.2;
+    const frame = hole - 1; // half a module of margin each side
+    const fx = QUIET + h0 + 0.5;
+    const width = hole - 2.6;
     const fontSize = Number((width / 1.8).toFixed(3));
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" role="img" aria-label="${label}">`
         + `<rect class="qr-bg" width="${total}" height="${total}"/>`
         + `<path class="qr-dot" shape-rendering="crispEdges" d="${parts.join('')}"/>`
-        + `<text class="qr-dot" x="${mid}" y="${mid}" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="800" font-size="${fontSize}" textLength="${Number(width.toFixed(3))}" lengthAdjust="spacingAndGlyphs" aria-hidden="true">GNR</text>`
+        + `<rect class="qr-frame" x="${fx}" y="${fx}" width="${frame}" height="${frame}" fill="none" stroke-width="0.3"/>`
+        + `<text class="qr-dot" x="${mid}" y="${mid}" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="500" font-size="${fontSize}" textLength="${Number(width.toFixed(3))}" lengthAdjust="spacingAndGlyphs" aria-hidden="true">GNR</text>`
         + '</svg>';
 }
