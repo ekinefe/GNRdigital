@@ -1,8 +1,8 @@
 // Draws a QR matrix as a classic square-module SVG with the GNR mark (shared/ui/gnrMark.js) in the middle.
 // Colours come from CSS classes the page defines: qr-bg and qr-dot decide whether the code is dark on light or
-// light on dark; the mark (qr-mark-bg, qr-mark) is always light on solid black, so it looks the same either way.
+// light on dark; the mark (qr-mark-bg, qr-mark, qr-mark-text) is always light on solid black, the same either way.
 import { encodeQr } from './qr.js';
-import { MARK_SIZE, MARK_FRAME, MARK_LETTER_STROKE, MARK_LETTERS } from '../../shared/ui/gnrMark.js';
+import { MARK_SIZE, MARK_FRAME, MARK_LETTERS } from '../../shared/ui/gnrMark.js';
 
 const QUIET = 4; // empty border around the code, in modules (the standard asks for 4)
 
@@ -44,6 +44,6 @@ export function qrSvg(text, { label = 'QR code' } = {}) {
         + `<g transform="translate(${at} ${at}) scale(${scale})" aria-hidden="true">`
         + `<rect class="qr-mark-bg" width="${MARK_SIZE}" height="${MARK_SIZE}"/>`
         + `<rect class="qr-mark" x="${inset}" y="${inset}" width="${MARK_SIZE - inset * 2}" height="${MARK_SIZE - inset * 2}" fill="none" stroke-width="${stroke}"/>`
-        + `<path class="qr-mark" d="${MARK_LETTERS}" fill="none" stroke-width="${MARK_LETTER_STROKE}" stroke-linejoin="miter" stroke-linecap="butt"/></g>`
+        + `<path class="qr-mark-text" d="${MARK_LETTERS}"/></g>`
         + '</svg>';
 }

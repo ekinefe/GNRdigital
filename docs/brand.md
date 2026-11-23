@@ -5,7 +5,7 @@ GNRdigital is my personal brand, not a studio. **GNR** comes from my surname (Gu
 ## Lockup
 - **GNR** in extra-bold, **digital** in light, a pink `_` cursor, and a small pink `v2` tag. Monospace (JetBrains Mono).
 - Component: `shared/ui/Wordmark.jsx` (header). Text values live in `shared/config/brand.js`.
-- Mark (`shared/ui/gnrMark.js`): `GNR` drawn as strokes in a thin light frame on a solid black square, so it has the same contrast on dark and light surfaces. Used as the favicon (`public/favicon.svg`, kept in sync by `gnrMark.test.js`) and in the middle of the QR on `/card/share`, where it stays light on black in "Light QR" too. Checked at 16, 32 and 128 px; the full word does not fit at 16 px, so the mark is GNR only.
+- Mark (`shared/ui/gnrMark.js`): `GNR` in JetBrains Mono ExtraBold, the same font and weight as the wordmark's bold GNR (outlines turned into a path, so no font is needed), in a thin light frame on a solid black square, so it has the same contrast on dark and light surfaces. Used as the favicon (`public/favicon.svg`, kept in sync by `gnrMark.test.js`) and in the middle of the QR on `/card/share`, where it stays light on black in "Light QR" too. Checked at 16, 32 and 128 px; the full word does not fit at 16 px, so the mark is GNR only.
 - Social image: `public/og.png` (1200x630). Source is `scripts/og/og.html`; regenerate with `bash scripts/og/make-og.sh` (needs Chrome). Its URL follows `brand.publicUrl` through `%BRAND_URL%` in `index.html`.
 - Colors come from the Tailwind tokens (`cyber-text`, `cyber-pink`, `cyber-cyan`), never hard-coded in components.
 
